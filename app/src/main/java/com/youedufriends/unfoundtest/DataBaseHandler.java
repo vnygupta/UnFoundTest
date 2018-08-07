@@ -17,9 +17,10 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
     Context context;
     SQLiteDatabase db;
+    ContentValues values= new ContentValues();
 
      DatabaseHandler(Context context) {
-        super(context, "Unfound", null,1);
+        super(context, "Unfound", null,2);
         this.context = context;
         db = this.getWritableDatabase();
     }
@@ -56,7 +57,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
 
  public String getVehicle(String framematerial,String powertrain,String wheelframe,String wheelnumber,String date)
  {
-     String vehicle="";
+     String vehicle="Unknown";
      String[] col={"type"};
      String selection=" frame = ? AND powerTrain = ? AND wheelNumber = ? AND wheelMaterial = ?";
 
@@ -64,32 +65,34 @@ class DatabaseHandler extends SQLiteOpenHelper {
      Cursor cursor=db.query("Vehicle",col,selection,parameter,null,null,null);
      Cursor cursor1=db.rawQuery("select type from Vehicle where frame=? AND powerTrain=? AND wheelNumber=? AND wheelMaterial=?",parameter,null);
 
-     Toast.makeText(context,"count=="+cursor1.getCount(),Toast.LENGTH_LONG).show();
+     Toast.makeText(context,cursor1.getCount()+" Records Found ",Toast.LENGTH_LONG).show();
      if(cursor1.getCount()>0) {
          cursor1.moveToFirst();
          do {
              vehicle = cursor1.getString(0);
-             Toast.makeText(context, "count==" + cursor1.getString(0), Toast.LENGTH_LONG).show();
+
          }while (cursor.moveToNext());
+
+         values.put("vehicleName",vehicle);
+         values.put("frame",framematerial);
+         values.put("powerTrain",powertrain);
+         values.put("wheelNumber",wheelnumber);
+         values.put("wheelMaterial",wheelframe);
+         values.put("date",date);
+
+         long rid=db.insert("Report",null,values);
+         if(rid<0)
+         {
+             Toast.makeText(context,"insert issue",Toast.LENGTH_LONG).show();
+         }
+         else
+         {
+             Toast.makeText(context,"insert success",Toast.LENGTH_LONG).show();
+         }
      }
      cursor.close();
-     ContentValues values= new ContentValues();
-     values.put("vehicleName",vehicle);
-     values.put("frame",framematerial);
-     values.put("powerTrain",powertrain);
-     values.put("wheelNumber",wheelnumber);
-     values.put("wheelMaterial",wheelframe);
-     values.put("date",date);
 
-     long rid=db.insert("Report",null,values);
-     if(rid<0)
-     {
-         Toast.makeText(context,"insert issue",Toast.LENGTH_LONG).show();
-     }
-     else
-     {
-         Toast.makeText(context,"insert success",Toast.LENGTH_LONG).show();
-     }
+
      return vehicle;
  }
 
@@ -98,7 +101,7 @@ class DatabaseHandler extends SQLiteOpenHelper {
      ArrayList<ReportList> reportList=new ArrayList<>();
 
      Cursor cursor=db.query("Report",null,null,null,null,null,null);
-     Toast.makeText(context, "count==" + cursor.getCount(), Toast.LENGTH_LONG).show();
+     Toast.makeText(context, +cursor.getCount()+"  Records Found", Toast.LENGTH_LONG).show();
 
      if(cursor.getCount()>0) {
          cursor.moveToFirst();

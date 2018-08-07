@@ -93,14 +93,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                Intent intent=new Intent(MainActivity.this,ReportActivity.class);
-                intent.putExtra("frame",frameMaterial);
-                intent.putExtra("power",powertrain);
-                intent.putExtra("wheelnumber",wheelnumber);
-                intent.putExtra("wheelframe",wheelframe);
-                intent.putExtra("vehicle",Vehicle);
-                intent.putExtra("date",date1);
-                startActivity(intent);
+                if(Vehicle.equals("Unknown")){
+                    Toast.makeText(MainActivity.this," Inavlid Input\n Please select appropriate option ",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                    intent.putExtra("frame", frameMaterial);
+                    intent.putExtra("power", powertrain);
+                    intent.putExtra("wheelnumber", wheelnumber);
+                    intent.putExtra("wheelframe", wheelframe);
+                    intent.putExtra("vehicle", Vehicle);
+                    intent.putExtra("date", date1);
+                    startActivity(intent);
+                }
 
 
 
